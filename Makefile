@@ -10,7 +10,7 @@ WARNINGS = -Wall -Wpedantic -W -Wstrict-prototypes -Wwrite-strings
 DEBUG_FLAGS ?= -g -ggdb
 
 REAL_CFLAGS = $(OPTIMAZATION) -fPIC $(CFLAGS) $(WARNINGS) $(DEBUG_FLAGS) $(ARCH)
-REAL_CXXFLAGS = $(REAL_CFLAGS)
+REAL_CXXFLAGS = $(REAL_CFLAGS) -Wno-c99-extensions
 REAL_LDFLAGS = $(LDFLAGS) $(ARCH)
 
 STLIBSUFFIX = a

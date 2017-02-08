@@ -60,13 +60,13 @@ int redis_pool_create(const REDIS_CONFIG* config, REDIS_INSTANCE** instance)
     if (inst->config->net_readwrite_timeout <= 0)
         inst->config->net_readwrite_timeout = 0;
     if (inst->config->connect_failure_retry_delay <= 0)
-        inst->config->connect_failure_retry_delay = 0;
+        inst->config->connect_failure_retry_delay = -1;
 
     for (i = 0; i < inst->config->num_endpoints; i++) {
         host = inst->config->endpoints[i].host;
         port = inst->config->endpoints[i].port;
-        if (host == NULL || strlen(host) == 0 || port <= 0) {
-            log_(L_ERROR|L_CONS, "%s: Invalid redis endpoint #%d", __func__, i);
+        if (host == NULL || strlen(host) == 0 || port <= 0 || port > 65535) {
+            log_(L_ERROR|L_CONS, "%s: Invalid redis endpoint @%d", __func__, i);
             redis_pool_destroy(inst);
             return -1;
         }
@@ -239,7 +239,7 @@ static int connect_single_socket(REDIS_SOCKET *redisocket, REDIS_INSTANCE *inst)
 
         /* We have more backups to try */
         if (c) {
-            log_(L_WARN|L_CONS, "%s: Failed to connect redis handle #%d @%d, trying backup: %s",
+            log_(L_WARN|L_CONS, "%s: Failed to connect redis handle #%d @%d: %s, trying backup",
                 __func__, redisocket->id, redisocket->backup, c->errstr);
             redisFree(c);
         } else {
