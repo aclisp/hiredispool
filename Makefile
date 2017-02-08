@@ -1,3 +1,5 @@
+LDFLAGS = hiredis/libhiredis.a
+
 OBJ = log.o hiredispool.o
 LIBNAME = libhiredispool
 
@@ -18,7 +20,9 @@ STLIB_MAKE_CMD = ar rcs $(STLIBNAME)
 all: $(STLIBNAME)
 
 # Deps (use make dep to generate this)
-
+hiredispool.o: hiredispool.c hiredispool.h log.h hiredis/hiredis.h \
+  hiredis/read.h hiredis/sds.h
+log.o: log.c log.h
 
 $(STLIBNAME): $(OBJ)
 	$(STLIB_MAKE_CMD) $(OBJ)
@@ -26,11 +30,11 @@ $(STLIBNAME): $(OBJ)
 static: $(STLIBNAME)
 
 # Binaries
-test_log.exe: test_log.c $(STLIBNAME)
+test_log.exe: test_log.c log.h $(STLIBNAME)
 	$(CC) -o $@ $(REAL_CFLAGS) $(REAL_LDFLAGS) -I. $< $(STLIBNAME)
 
-test_hiredispool.exe: test_hiredispool.cpp $(STLIBNAME)
-	$(CXX) -o $@ $(REAL_CXXFLAGS) $(REAL_LDFLAGS) -I. $< $(STLIBNAME)
+test_hiredispool.exe: test_hiredispool.cpp hiredispool.h log.h $(STLIBNAME)
+	$(CXX) -std=c++11 -o $@ $(REAL_CXXFLAGS) $(REAL_LDFLAGS) -I. $< $(STLIBNAME)
 
 .c.o:
 	$(CC) -std=c99 -c $(REAL_CFLAGS) $<
@@ -39,9 +43,10 @@ test_hiredispool.exe: test_hiredispool.cpp $(STLIBNAME)
 	$(CXX) -std=c++11 -c $(REAL_CXXFLAGS) $<
 
 clean:
-	ls $(STLIBNAME) *.o *.out *.exe
+	rm -rf $(STLIBNAME) *.o *.out *.exe
 
 dep:
 	$(CC) -MM *.c
+	$(CXX) -MM *.cpp
 
 .PHONY: all static clean dep

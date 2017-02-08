@@ -2,6 +2,9 @@
 
 int main(int argc, char** argv)
 {
+    (void)argc;
+    (void)argv;
+
     LOG_CONFIG c = {
         9,
         LOG_DEST_FILES,

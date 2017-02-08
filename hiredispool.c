@@ -273,6 +273,8 @@ static int redis_close_socket(REDIS_INSTANCE *inst, REDIS_SOCKET * redisocket)
 {
     int rcode;
 
+    (void)inst;
+
     DEBUG("%s: Closing redis socket %d", __func__,
            redisocket->id);
 
@@ -434,6 +436,8 @@ REDIS_SOCKET * redis_get_socket(REDIS_INSTANCE * inst)
 int redis_release_socket(REDIS_INSTANCE * inst, REDIS_SOCKET * redisocket)
 {
     int rcode;
+
+    (void)inst;
 
     if (redisocket->inuse != 1) {
         log_(L_FATAL|L_CONS, "%s: I'm NOT in use. Bug?", __func__);

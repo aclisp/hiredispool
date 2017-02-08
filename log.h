@@ -27,8 +27,8 @@ typedef enum _log_dest_t {
 typedef struct log_config {
     int verbose;
     log_dest_t dest;
-    char* file;
-    char* progname;
+    const char* file;
+    const char* progname;
     int level_hold;
     int print_millisec;
 } LOG_CONFIG;
