@@ -49,18 +49,19 @@ private:
     REDIS_SOCKET* sock;
 };
 
-// RedisReply is a smart pointer encapsulate redisReply*
+// Helper
 struct RedisReplyRef
 {
     redisReply* p;
     explicit RedisReplyRef(redisReply* _p): p(_p) {}
 };
 
-class RedisReply
+// RedisReplyPtr is a smart pointer encapsulate redisReply*
+class RedisReplyPtr
 {
 public:
-    explicit RedisReply(void* _reply = 0) : reply((redisReply*)_reply) {}
-    ~RedisReply() {
+    explicit RedisReplyPtr(void* _reply = 0) : reply((redisReply*)_reply) {}
+    ~RedisReplyPtr() {
         //printf("freeReplyObject %p\n", (void*)reply);
         freeReplyObject(reply);
     }
@@ -73,33 +74,34 @@ public:
     }
 
     // transfer ownership
-    RedisReply(RedisReply& other) {
+    RedisReplyPtr(RedisReplyPtr& other) {
         reply = other.release();
     }
-    RedisReply& operator=(RedisReply& other) {
+    RedisReplyPtr& operator=(RedisReplyPtr& other) {
         if (this == &other)
             return *this;
-        RedisReply temp(release());
+        RedisReplyPtr temp(release());
         reply = other.release();
         return *this;
     }
 
     // automatic conversions
-    RedisReply(RedisReplyRef _ref) {
+    RedisReplyPtr(RedisReplyRef _ref) {
         reply = _ref.p;
     }
-    RedisReply& operator=(RedisReplyRef _ref) {
+    RedisReplyPtr& operator=(RedisReplyRef _ref) {
         if (reply == _ref.p )
             return *this;
-        RedisReply temp(release());
+        RedisReplyPtr temp(release());
         reply = _ref.p;
         return *this;
     }
     operator RedisReplyRef() { return RedisReplyRef(release()); }
 
     bool notNull() const { return (reply != NULL); }
-    operator redisReply*() const { return reply; }
+    redisReply* get() const { return reply; }
     redisReply* operator->() const { return reply; }
+    redisReply& operator*() const { return *reply; }
 
 private:
     redisReply* reply;
@@ -128,9 +130,9 @@ public:
     // redisCommand is a thread-safe wrapper of that function in hiredis
     // It first get a connection from pool, execute the command on that
     // connection and then release the connection to pool.
-    // the command's reply is returned as a RedisReply smart pointer,
-    // which can be used just like raw redisReply.
-    RedisReply redisCommand(const char *format, ...);
+    // the command's reply is returned as a smart pointer,
+    // which can be used just like raw redisReply pointer.
+    RedisReplyPtr redisCommand(const char *format, ...);
 
     // Set the string value as value of the key.
     // return status code reply
