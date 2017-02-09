@@ -22,11 +22,11 @@ typedef struct log_config_internal {
 
 static LOG_CONFIG_INTERNAL C = {
     0,
-    LOG_DEST_NULL,
+    LOG_DEST_STDERR,
     "",
     "noname.log",
     "noname",
-    L_ERROR,
+    L_WARN,
     0
 };
 

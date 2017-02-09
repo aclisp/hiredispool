@@ -1,3 +1,10 @@
+/* Author:   Huanghao
+ * Date:     2017-2
+ * Revision: 0.1
+ * Function: Simple lightweight logging interface
+ * Usage:
+ */
+
 #ifndef LOG_H
 #define LOG_H
 

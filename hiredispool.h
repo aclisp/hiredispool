@@ -1,3 +1,13 @@
+/* Author:   Huanghao
+ * Date:     2017-2
+ * Revision: 0.1
+ * Function: Simple lightweight connection pool for hiredis
+ *     + Connection pooling
+ *     + Auto-reconnect and retry
+ *     + Multiple server endpoints
+ * Usage:
+ */
+
 #ifndef HIREDISPOOL_H
 #define HIREDISPOOL_H
 

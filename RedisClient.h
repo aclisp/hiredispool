@@ -1,3 +1,10 @@
+/* Author:   Huanghao
+ * Date:     2017-2
+ * Revision: 0.1
+ * Function: Thread-safe redis client that mimic the Jedis interface
+ * Usage:    see test_RedisClient.cpp
+ */
+
 #ifndef REDISCLIENT_H
 #define REDISCLIENT_H
 
