@@ -36,3 +36,12 @@ string RedisClient::get(const string& key)
     }
     return "";
 }
+
+long long RedisClient::incr(const string& key)
+{
+    RedisReply reply = redisCommand("INCR %s", key.c_str());
+    if (reply.notNull()) {
+        return reply->integer;
+    }
+    return 0;
+}

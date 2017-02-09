@@ -142,6 +142,8 @@ public:
 
     // For more Jedis-like interfaces... DIY :)
 
+    long long incr(const std::string& key);
+
 private:
     REDIS_INSTANCE* inst;
 };

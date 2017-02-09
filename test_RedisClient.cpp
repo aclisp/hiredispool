@@ -28,15 +28,27 @@ int main(int argc, char** argv)
 
     RedisClient client(conf);
 
+    cout << "Press <ENTER> to continue..." << endl;
     cin.get();
 
     string res = client.set("key0", "value0");
     cout << "SET: " << res << endl;
 
+    cout << "Press <ENTER> to continue..." << endl;
     cin.get();
 
     res = client.get("key0");
     cout << "GET: " << res << endl;
+
+    cout << "Press <ENTER> to continue..." << endl;
+    cin.get();
+
+    client.set("count0", "0");
+    long long count0;
+    for (long long i = 0; i < 1000; i++) {
+        count0 = client.incr("count0");
+    }
+    cout << "INCR count0 to " << count0 << endl;
 
     return 0;
 }
