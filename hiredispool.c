@@ -461,35 +461,58 @@ void* redis_command(REDIS_SOCKET* redisocket, REDIS_INSTANCE* inst, const char* 
 {
     va_list ap;
     void *reply;
+    va_start(ap, format);
+    reply = redis_vcommand(redisocket, inst, format, ap);
+    va_end(ap);
+    return reply;
+}
+
+void* redis_vcommand(REDIS_SOCKET* redisocket, REDIS_INSTANCE* inst, const char* format, va_list ap)
+{
+    va_list ap2;
+    void *reply;
     redisContext* c;
+
+    va_copy(ap2, ap);
 
     /* forward to hiredis API */
     c = redisocket->conn;
-    va_start(ap, format);
     reply = redisvCommand(c, format, ap);
-    va_end(ap);
 
-    if (reply == NULL && (c->err == REDIS_ERR_IO || c->err == REDIS_ERR_EOF)) {
+    if (reply == NULL) {
+        /* Once an error is returned the context cannot be reused and you shoud
+           set up a new connection.
+         */
+
         /* close the socket that failed */
         redisFree(c);
 
         /* reconnect the socket */
         if (connect_single_socket(redisocket, inst) < 0) {
             log_(L_ERROR|L_CONS, "%s: Reconnect failed, server down?", __func__);
-            return NULL;
+            goto quit;
         }
 
         /* retry on the newly connected socket */
         c = redisocket->conn;
-        va_start(ap, format);
-        reply = redisvCommand(c, format, ap);
-        va_end(ap);
+        reply = redisvCommand(c, format, ap2);
 
         if (reply == NULL) {
-            log_(L_ERROR, "%s: Failed after reconnect", __func__);
-            return NULL;
+            log_(L_ERROR, "%s: Failed after reconnect: %s (%d)", __func__, c->errstr, c->err);
+
+            /* Clean up */
+            redisFree(c);
+            redisocket->conn = NULL;
+            redisocket->state = sockunconnected;
+            redisocket->backup = (redisocket->backup + 1) % inst->config->num_endpoints;
+
+            inst->connect_after = time(NULL) + inst->config->connect_failure_retry_delay;
+
+            goto quit;
         }
     }
 
+quit:
+    va_end(ap2);
     return reply;
 }

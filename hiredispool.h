@@ -11,6 +11,8 @@
 #ifndef HIREDISPOOL_H
 #define HIREDISPOOL_H
 
+#include <stdarg.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -62,6 +64,7 @@ REDIS_SOCKET* redis_get_socket(REDIS_INSTANCE* instance);
 int redis_release_socket(REDIS_INSTANCE* instance, REDIS_SOCKET* redisocket);
 
 void* redis_command(REDIS_SOCKET* redisocket, REDIS_INSTANCE* instance, const char* format, ...);
+void* redis_vcommand(REDIS_SOCKET* redisocket, REDIS_INSTANCE* instance, const char* format, va_list ap);
 
 #ifdef __cplusplus
 }
