@@ -8,8 +8,9 @@ CXX = g++
 OPTIMAZATION ?= -O0
 WARNINGS = -Wall -Wpedantic -W -Wstrict-prototypes -Wwrite-strings
 DEBUG_FLAGS ?= -g -ggdb
+MACROS = -D_GNU_SOURCE
 
-REAL_CFLAGS = $(OPTIMAZATION) -fPIC $(CFLAGS) $(WARNINGS) $(DEBUG_FLAGS) $(ARCH)
+REAL_CFLAGS = $(OPTIMAZATION) -pthread -fPIC $(CFLAGS) $(WARNINGS) $(DEBUG_FLAGS) $(ARCH) $(MACROS)
 REAL_CXXFLAGS = $(REAL_CFLAGS) -Wno-c99-extensions
 REAL_LDFLAGS = $(LDFLAGS) $(ARCH)
 
@@ -33,13 +34,13 @@ static: $(STLIBNAME)
 
 # Binaries
 test_log.exe: test_log.c log.h $(STLIBNAME)
-	$(CC) -o $@ $(REAL_CFLAGS) $(REAL_LDFLAGS) -I. $< $(STLIBNAME)
+	$(CC) -o $@ $(REAL_CFLAGS) -I. $< $(STLIBNAME) $(REAL_LDFLAGS)
 
 test_hiredispool.exe: test_hiredispool.cpp hiredispool.h log.h $(STLIBNAME)
-	$(CXX) -std=c++11 -o $@ $(REAL_CXXFLAGS) $(REAL_LDFLAGS) -I. $< $(STLIBNAME)
+	$(CXX) -std=c++11 -o $@ $(REAL_CXXFLAGS) -I. $< $(STLIBNAME) $(REAL_LDFLAGS)
 
 test_RedisClient.exe: test_RedisClient.cpp RedisClient.h hiredispool.h log.h $(STLIBNAME)
-	$(CXX) -std=c++11 -o $@ $(REAL_CXXFLAGS) $(REAL_LDFLAGS) -I. $< $(STLIBNAME)
+	$(CXX) -std=c++11 -o $@ $(REAL_CXXFLAGS) -I. $< $(STLIBNAME) $(REAL_LDFLAGS)
 
 .c.o:
 	$(CC) -std=c99 -c $(REAL_CFLAGS) $<

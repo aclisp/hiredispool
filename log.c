@@ -254,7 +254,7 @@ int vlog(int lvl, const char *fmt, va_list ap)
     for (p = buffer; *p != '\0'; p++) {
         if (*p == '\r' || *p == '\n')
             *p = ' ';
-        else if ((*p >=0 && *p < 32) || (*p >= -128 && *p < 0))
+        else if ((*p >=0 && *p < 32) || (/**p >= -128 &&*/ *p < 0))
             *p = '?';
     }
     strcat(buffer, "\n");

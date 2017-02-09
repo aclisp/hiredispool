@@ -16,6 +16,7 @@
 #include "hiredis/hiredis.h"
 
 #include <string>
+#include <stdexcept>
 
 
 // PooledSocket is a pooled socket wrapper that provides a convenient
