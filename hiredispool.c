@@ -500,14 +500,7 @@ void* redis_vcommand(REDIS_SOCKET* redisocket, REDIS_INSTANCE* inst, const char*
         if (reply == NULL) {
             log_(L_ERROR, "%s: Failed after reconnect: %s (%d)", __func__, c->errstr, c->err);
 
-            /* Clean up */
-            redisFree(c);
-            redisocket->conn = NULL;
-            redisocket->state = sockunconnected;
-            redisocket->backup = (redisocket->backup + 1) % inst->config->num_endpoints;
-
-            inst->connect_after = time(NULL) + inst->config->connect_failure_retry_delay;
-
+            /* do not need clean up here because the next caller will retry. */
             goto quit;
         }
     }

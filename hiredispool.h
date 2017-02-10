@@ -45,7 +45,7 @@ typedef struct redis_socket {
     pthread_mutex_t mutex;
     int inuse;
     struct redis_socket* next;
-    enum { sockconnected, sockunconnected } state;
+    enum { sockunconnected, sockconnected } state;
     void* conn;
 } REDIS_SOCKET;
 
