@@ -50,5 +50,15 @@ int main(int argc, char** argv)
     }
     cout << "INCR count0 to " << count0 << endl;
 
+    cout << "Press <ENTER> to continue..." << endl;
+    cin.get();
+
+    {
+        RedisReplyPtr reply = client.redisCommand("PING");
+        cout << "PING: " << reply->str << endl;
+        // reply will be freed out of scope.
+    }
+
     return 0;
 }
+
