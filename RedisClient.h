@@ -133,6 +133,7 @@ public:
     // the command's reply is returned as a smart pointer,
     // which can be used just like raw redisReply pointer.
     RedisReplyPtr redisCommand(const char *format, ...);
+    RedisReplyPtr redisvCommand(const char *format, va_list ap);
 
     // Set the string value as value of the key.
     // return status code reply
