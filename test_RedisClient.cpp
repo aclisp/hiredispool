@@ -28,32 +28,47 @@ int main(int argc, char** argv)
 
     RedisClient client(conf);
 
-    cout << "Press <ENTER> to continue..." << endl;
-    cin.get();
+    {
+        cout << "Press <ENTER> to continue..." << endl;
+        cin.get();
 
-    string res = client.set("key0", "value0");
-    cout << "SET: " << res << endl;
-
-    cout << "Press <ENTER> to continue..." << endl;
-    cin.get();
-
-    res = client.get("key0");
-    cout << "GET: " << res << endl;
-
-    cout << "Press <ENTER> to continue..." << endl;
-    cin.get();
-
-    client.set("count0", "0");
-    long long count0;
-    for (long long i = 0; i < 1000; i++) {
-        count0 = client.incr("count0");
+        RedisReplyPtr reply = client.redisCommand("SET %s %s", "key0", "value0");
+        if (reply.notNull())
+            cout << "SET: " << reply->str << endl;
+        else
+            cout << "SET: " << "Something wrong." << endl;
     }
-    cout << "INCR count0 to " << count0 << endl;
-
-    cout << "Press <ENTER> to continue..." << endl;
-    cin.get();
 
     {
+        cout << "Press <ENTER> to continue..." << endl;
+        cin.get();
+
+        RedisReplyPtr reply = client.redisCommand("GET %s", "key0");
+        if (reply.notNull())
+            if (reply->type == REDIS_REPLY_NIL)
+                cout << "GET: Key does not exist." << endl;
+            else
+                cout << "GET: " << reply->str << endl;
+        else
+            cout << "GET: " << "Something wrong." << endl;
+    }
+
+    {
+        cout << "Press <ENTER> to continue..." << endl;
+        cin.get();
+
+        client.redisCommand("SET count0 0");
+        long long count0;
+        for (long long i = 0; i < 1000; i++) {
+            count0 = client.redisCommand("INCR count0")->integer;
+        }
+        cout << "INCR count0 to " << count0 << endl;
+    }
+
+    {
+        cout << "Press <ENTER> to continue..." << endl;
+        cin.get();
+
         RedisReplyPtr reply = client.redisCommand("PING");
         cout << "PING: " << reply->str << endl;
         // reply will be freed out of scope.
@@ -61,4 +76,3 @@ int main(int argc, char** argv)
 
     return 0;
 }
-

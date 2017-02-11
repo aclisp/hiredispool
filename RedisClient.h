@@ -1,7 +1,7 @@
 /* Author:   Huanghao
  * Date:     2017-2
  * Revision: 0.1
- * Function: Thread-safe redis client that mimic the Jedis interface
+ * Function: Thread-safe redis client
  * Usage:    see test_RedisClient.cpp
  */
 
@@ -107,7 +107,7 @@ private:
     redisReply* reply;
 };
 
-// RedisClient provides a Jedis-like interface, but it is threadsafe!
+// RedisClient provides a threadsafe redis client
 class RedisClient
 {
 private:
@@ -134,18 +134,6 @@ public:
     // which can be used just like raw redisReply pointer.
     RedisReplyPtr redisCommand(const char *format, ...);
     RedisReplyPtr redisvCommand(const char *format, va_list ap);
-
-    // Set the string value as value of the key.
-    // return status code reply
-    std::string set(const std::string& key, const std::string& value);
-
-    // Get the value of the specified key. if the key does not exist,
-    // empty string ("") is returned.
-    std::string get(const std::string& key);
-
-    // For more Jedis-like interfaces... DIY :)
-
-    long long incr(const std::string& key);
 
 private:
     REDIS_INSTANCE* inst;
