@@ -33,17 +33,15 @@ public:
     // throw runtime_error if something wrong.
     PooledSocket(REDIS_INSTANCE* _inst) : inst(_inst) {
         sock = redis_get_socket(inst);
-        if (sock == NULL)
-            throw std::runtime_error("Can't get socket from pool");
     }
     // Release the socket to pool
     ~PooledSocket() {
         redis_release_socket(inst, sock);
     }
     // Implicit convert to REDIS_SOCKET*
-    operator REDIS_SOCKET*() {
-        return sock;
-    }
+    operator REDIS_SOCKET*() const { return sock; }
+    bool notNull() const { return (sock != NULL); }
+    bool isNull() const { return (sock == NULL); }
 private:
     REDIS_INSTANCE* inst;
     REDIS_SOCKET* sock;
@@ -98,7 +96,8 @@ public:
     }
     operator RedisReplyRef() { return RedisReplyRef(release()); }
 
-    bool notNull() const { return (reply != NULL); }
+    bool notNull() const { return (reply != 0); }
+    bool isNull() const { return (reply == 0); }
     redisReply* get() const { return reply; }
     redisReply* operator->() const { return reply; }
     redisReply& operator*() const { return *reply; }

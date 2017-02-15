@@ -1,4 +1,5 @@
 #include "RedisClient.h"
+#include "log.h"
 
 #include <stdarg.h>
 
@@ -20,10 +21,14 @@ RedisReplyPtr RedisClient::redisCommand(const char *format, ...)
 
 RedisReplyPtr RedisClient::redisvCommand(const char *format, va_list ap)
 {
-    void* reply;
+    void* reply = 0;
     PooledSocket socket(inst);
 
-    reply = redis_vcommand(socket, inst, format, ap);
+    if (socket.notNull()) {
+        reply = redis_vcommand(socket, inst, format, ap);
+    } else {
+        log_(L_ERROR|L_CONS, "Can not get socket from redis connection pool, server down? or not enough connection?");
+    }
 
     return RedisReplyPtr(reply);
 }

@@ -66,7 +66,7 @@ int redis_pool_create(const REDIS_CONFIG* config, REDIS_INSTANCE** instance)
         host = inst->config->endpoints[i].host;
         port = inst->config->endpoints[i].port;
         if (host == NULL || strlen(host) == 0 || port <= 0 || port > 65535) {
-            log_(L_ERROR|L_CONS, "%s: Invalid redis endpoint @%d", __func__, i);
+            log_(L_ERROR|L_CONS, "%s: Invalid redis endpoint @%d: %s:%d", __func__, i, host, port);
             redis_pool_destroy(inst);
             return -1;
         }
@@ -438,6 +438,9 @@ int redis_release_socket(REDIS_INSTANCE * inst, REDIS_SOCKET * redisocket)
     int rcode;
 
     (void)inst;
+    if (redisocket == NULL) {
+        return 0;
+    }
 
     if (redisocket->inuse != 1) {
         log_(L_FATAL|L_CONS, "%s: I'm NOT in use. Bug?", __func__);
