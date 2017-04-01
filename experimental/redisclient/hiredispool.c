@@ -219,8 +219,12 @@ static int connect_single_socket(REDIS_SOCKET *redisocket, REDIS_INSTANCE *inst)
                 __func__, redisocket->id, redisocket->backup);
             redisocket->conn = c;
             redisocket->state = redis_socket::sockconnected;
-            /* Select the next endpoint as the new backup */
-            redisocket->backup = (redisocket->backup + 1) % inst->config->num_endpoints;
+            if (inst->config->num_endpoints > 1) {
+                /* Select the next _random_ endpoint as the new backup */
+                redisocket->backup = (redisocket->backup + (1 +
+                        rand() % (inst->config->num_endpoints - 1)
+                    )) % inst->config->num_endpoints;
+            }
 
             if (redisSetTimeout(c, timeout[1]) != REDIS_OK) {
                 logth(Error, "%s: Failed to set timeout: blocking-mode: %d, %s",
@@ -300,8 +304,8 @@ static int redis_close_socket(REDIS_INSTANCE *inst, REDIS_SOCKET * redisocket)
 
     (void)inst;
 
-    logth(Info, "%s: Closing redis socket %d", __func__,
-           redisocket->id);
+    logth(Info, "%s: Closing redis socket =%d #%d @%d", __func__,
+           redisocket->state, redisocket->id, redisocket->backup);
 
     if (redisocket->state == redis_socket::sockconnected) {
         redisFree((redisContext*)redisocket->conn);
