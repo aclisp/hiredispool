@@ -1,11 +1,3 @@
-# hiredispool
+# hiredispool [Experimental]
 
-## Features 
-
-* Connection pooling
-* Auto-reconnect and retry
-* Multiple server endpoints
-
-## Limitations
-
-* To support auto-reconnect and retry, you must use a wrapper of hiredis synchronous API
+The code here can only be run along with the C++ framework.
