@@ -16,3 +16,7 @@ This library provides connection pooling and auto-reconnect for hiredis. It is a
 ## Limitations
 
 * To support auto-reconnect and retry, you must use a wrapper of hiredis synchronous API
+
+## How to use
+
+To build it, clone the repo and `make`. Check out the `test_*.cpp` for examples.
