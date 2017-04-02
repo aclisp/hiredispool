@@ -21,15 +21,16 @@ int main(int argc, char** argv)
     };
     log_set_config(&c);
 
-    REDIS_ENDPOINT endpoints[2] = {
+    REDIS_ENDPOINT endpoints[4] = {
         { "127.0.0.1", 6379 },
         { "127.0.0.1", 6380 },
-        //{ "127.0.0.1", 6381 },
+        { "127.0.0.1", 6381 },
+        { "127.0.0.1", 6382 },
     };
 
     REDIS_CONFIG conf = {
         (REDIS_ENDPOINT*)&endpoints,
-        2,
+        4,
         10000,
         5000,
         20,

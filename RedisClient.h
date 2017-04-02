@@ -58,52 +58,52 @@ struct RedisReplyRef
 class RedisReplyPtr
 {
 public:
-    explicit RedisReplyPtr(void* _reply = 0) : reply((redisReply*)_reply) {}
+    explicit RedisReplyPtr(void* _p = 0) : p((redisReply*)_p) {}
     ~RedisReplyPtr() {
-        //printf("freeReplyObject %p\n", (void*)reply);
-        freeReplyObject(reply);
+        //printf("freeReplyObject %p\n", (void*)p);
+        freeReplyObject(p);
     }
 
     // release ownership of the managed object
     redisReply* release() {
-        redisReply* temp = reply;
-        reply = NULL;
+        redisReply* temp = p;
+        p = NULL;
         return temp;
     }
 
     // transfer ownership
     RedisReplyPtr(RedisReplyPtr& other) {
-        reply = other.release();
+        p = other.release();
     }
     RedisReplyPtr& operator=(RedisReplyPtr& other) {
         if (this == &other)
             return *this;
         RedisReplyPtr temp(release());
-        reply = other.release();
+        p = other.release();
         return *this;
     }
 
     // automatic conversions
     RedisReplyPtr(RedisReplyRef _ref) {
-        reply = _ref.p;
+        p = _ref.p;
     }
     RedisReplyPtr& operator=(RedisReplyRef _ref) {
-        if (reply == _ref.p )
+        if (p == _ref.p)
             return *this;
         RedisReplyPtr temp(release());
-        reply = _ref.p;
+        p = _ref.p;
         return *this;
     }
     operator RedisReplyRef() { return RedisReplyRef(release()); }
 
-    bool notNull() const { return (reply != 0); }
-    bool isNull() const { return (reply == 0); }
-    redisReply* get() const { return reply; }
-    redisReply* operator->() const { return reply; }
-    redisReply& operator*() const { return *reply; }
+    bool notNull() const { return (p != 0); }
+    bool isNull() const { return (p == 0); }
+    redisReply* get() const { return p; }
+    redisReply* operator->() const { return p; }
+    redisReply& operator*() const { return *p; }
 
 private:
-    redisReply* reply;
+    redisReply* p;
 };
 
 // RedisClient provides a threadsafe redis client

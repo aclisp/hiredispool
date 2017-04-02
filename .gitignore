@@ -3,3 +3,5 @@
 *.o
 *.out
 *.exe
+log/
+*.dSYM

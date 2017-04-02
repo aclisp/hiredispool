@@ -9,8 +9,8 @@ using namespace std;
 
 RedisReplyPtr RedisClient::redisCommand(const char *format, ...)
 {
-    va_list ap;
     RedisReplyPtr reply;
+    va_list ap;
 
     va_start(ap, format);
     reply = redisvCommand(format, ap);

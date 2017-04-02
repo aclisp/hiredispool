@@ -25,7 +25,7 @@ hiredispool.o: hiredispool.c hiredispool.h log.h hiredis/hiredis.h \
   hiredis/read.h hiredis/sds.h
 log.o: log.c log.h
 RedisClient.o: RedisClient.cpp RedisClient.h hiredispool.h \
-  hiredis/hiredis.h hiredis/read.h hiredis/sds.h
+  hiredis/hiredis.h hiredis/read.h hiredis/sds.h log.h
 
 $(STLIBNAME): $(OBJ)
 	$(STLIB_MAKE_CMD) $(OBJ)
@@ -40,6 +40,9 @@ test_hiredispool.exe: test_hiredispool.cpp hiredispool.h log.h $(STLIBNAME)
 	$(CXX) -std=c++11 -o $@ $(REAL_CXXFLAGS) -I. $< $(STLIBNAME) $(REAL_LDFLAGS)
 
 test_RedisClient.exe: test_RedisClient.cpp RedisClient.h hiredispool.h log.h $(STLIBNAME)
+	$(CXX) -std=c++11 -o $@ $(REAL_CXXFLAGS) -I. $< $(STLIBNAME) $(REAL_LDFLAGS)
+
+test_RedisClient2.exe: test_RedisClient2.cpp RedisClient.h hiredispool.h log.h $(STLIBNAME)
 	$(CXX) -std=c++11 -o $@ $(REAL_CXXFLAGS) -I. $< $(STLIBNAME) $(REAL_LDFLAGS)
 
 .c.o:
