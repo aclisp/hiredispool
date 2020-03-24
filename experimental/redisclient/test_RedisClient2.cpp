@@ -49,8 +49,6 @@ int main(int argc, char** argv)
     const int num_endpoints = 4;
 
     REDIS_ENDPOINT endpoints[num_endpoints] = {
-        //{ "106.38.198.210", 9403 },
-        //{ "106.120.184.86", 9403 },
         { "127.0.0.1", 6379 },
         { "127.0.0.1", 6379 },
         { "127.0.0.1", 6379 },

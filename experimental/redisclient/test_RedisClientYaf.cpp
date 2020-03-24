@@ -30,20 +30,7 @@ public:
 		map<string, map<string, string> > cfg;
 		map<string, string> attrs;
 
-		if (key == "ramcloudsources") {
-			attrs["host"] = "106.38.198.210";
-			attrs["port"] = "9403";
-			attrs["backup_host"] = "106.120.184.86";
-			attrs["backup_port"] = "9403";
-
-			attrs["connect_timeout"] = "200";
-			attrs["net_readwrite_timeout"] = "200";
-			attrs["num_redis_socks"] = "10";
-			attrs["connect_failure_retry_delay"] = "1";
-
-			cfg["default"] = attrs;
-		}
-		else if (key == "redisources") {
+		if (key == "redisources") {
 			attrs["num_redis_socks"] = "10";
 			attrs["host"] = "127.0.0.1";
 
