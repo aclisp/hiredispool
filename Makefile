@@ -73,10 +73,10 @@ dep:
 $(DYLIBNAME): $(OBJ)
 	$(DYLIB_MAKE_CMD) $(OBJ)
 
-$(PREFIX)/include/hiredis:
+hiredis-install:
 	cd hiredis && make install
 
-install: $(PREFIX)/include/hiredis $(DYLIBNAME) $(STLIBNAME)
+install: hiredis-install $(DYLIBNAME) $(STLIBNAME)
 	mkdir -p $(INSTALL_INCLUDE_PATH) $(INSTALL_LIBRARY_PATH)
 	$(INSTALL) hiredispool.h RedisClient.h $(INSTALL_INCLUDE_PATH)
 	$(INSTALL) $(DYLIBNAME) $(INSTALL_LIBRARY_PATH)
@@ -85,4 +85,4 @@ install: $(PREFIX)/include/hiredis $(DYLIBNAME) $(STLIBNAME)
 docker-image:
 	docker build -t hiredispool .
 
-.PHONY: all static clean dep install docker-image
+.PHONY: all static clean dep install hiredis-install docker-image
