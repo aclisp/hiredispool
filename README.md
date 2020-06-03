@@ -31,6 +31,6 @@ FROM alanvieyra333/hiredispool:latest as HIREDISPOOL
 
 FROM alpine:3.9
 
-COPY --from=HIREDISPOOL /usr/local/lib/libhiredis.so.0.13 /usr/local/lib/libhiredis.so
+COPY --from=HIREDISPOOL /usr/local/lib/libhiredis.so.0.15 /usr/local/lib/libhiredis.so
 COPY --from=HIREDISPOOL /usr/local/lib/libhiredispool.so.0.1 /usr/local/lib/libhiredispool.so
 ```
