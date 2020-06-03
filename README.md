@@ -21,6 +21,17 @@ This library provides connection pooling and auto-reconnect for hiredis. It is a
 
 To build it, clone the repo and `make`. Check out the `test_*.cpp` for examples.
 
+## Compile
+
+```shell
+git clone <hiredispool_git_url>
+cd hiredispool
+git submodule update --init
+make
+# optional
+make install
+```
+
 ## docker-hiredispool
 
 Dockerfile to build the [hiredispool](https://github.com/aclisp/hiredispool) library by [aclisp](https://github.com/aclisp).
