@@ -82,4 +82,7 @@ install: $(PREFIX)/include/hiredis $(DYLIBNAME) $(STLIBNAME)
 	$(INSTALL) $(DYLIBNAME) $(INSTALL_LIBRARY_PATH)
 	$(INSTALL) $(STLIBNAME) $(INSTALL_LIBRARY_PATH)
 
-.PHONY: all static clean dep install
+docker-image:
+	docker build -t hiredispool .
+
+.PHONY: all static clean dep install docker-image
