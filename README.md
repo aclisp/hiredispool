@@ -20,3 +20,28 @@ This library provides connection pooling and auto-reconnect for hiredis. It is a
 ## How to use
 
 To build it, clone the repo and `make`. Check out the `test_*.cpp` for examples.
+
+## Compile
+
+```shell
+git clone <hiredispool_git_url>
+cd hiredispool
+git submodule update --init
+make
+# optional
+make install
+```
+
+## docker-hiredispool
+
+Dockerfile to build the [hiredispool](https://github.com/aclisp/hiredispool) library by [aclisp](https://github.com/aclisp).
+
+Use this image as part of a multistage build to get the library into your own containers without having to build it and clean up dependencies afterwards.
+```
+FROM alanvieyra333/hiredispool:latest as HIREDISPOOL
+
+FROM alpine:3.9
+
+COPY --from=HIREDISPOOL /usr/local/lib/libhiredis.so.0.13 /usr/local/lib/libhiredis.so
+COPY --from=HIREDISPOOL /usr/local/lib/libhiredispool.so.0.1 /usr/local/lib/libhiredispool.so
+```

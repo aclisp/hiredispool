@@ -5,7 +5,7 @@ LIBNAME = libhiredispool
 
 CC = gcc
 CXX = g++
-OPTIMAZATION ?= -O0
+OPTIMAZATION ?= -O3
 WARNINGS = -Wall -Wpedantic -W -Wstrict-prototypes -Wwrite-strings
 DEBUG_FLAGS ?= -g -ggdb
 MACROS = -D_GNU_SOURCE
@@ -17,6 +17,18 @@ REAL_LDFLAGS = $(LDFLAGS) $(ARCH)
 STLIBSUFFIX = a
 STLIBNAME = $(LIBNAME).$(STLIBSUFFIX)
 STLIB_MAKE_CMD = ar rcs $(STLIBNAME)
+
+HIREDISPOOL_SONAME=0.1
+DYLIBSUFFIX=so
+DYLIBNAME=$(LIBNAME).$(DYLIBSUFFIX)
+DYLIB_MINOR_NAME=$(LIBNAME).$(DYLIBSUFFIX).$(HIREDISPOOL_SONAME)
+DYLIB_MAKE_CMD=$(CC) -shared -Wl,-soname,$(DYLIB_MINOR_NAME) -o $(DYLIBNAME) $(LDFLAGS)
+INSTALL?= cp -a
+PREFIX?=/usr/local
+INCLUDE_PATH?=include/hiredispool
+LIBRARY_PATH?=lib
+INSTALL_INCLUDE_PATH= $(PREFIX)/$(INCLUDE_PATH)
+INSTALL_LIBRARY_PATH= $(PREFIX)/$(LIBRARY_PATH)
 
 all: $(STLIBNAME)
 
@@ -58,4 +70,19 @@ dep:
 	$(CC) -MM *.c
 	$(CXX) -MM *.cpp
 
-.PHONY: all static clean dep
+$(DYLIBNAME): $(OBJ)
+	$(DYLIB_MAKE_CMD) $(OBJ)
+
+hiredis-install:
+	cd hiredis && make install
+
+install: hiredis-install $(DYLIBNAME) $(STLIBNAME)
+	mkdir -p $(INSTALL_INCLUDE_PATH) $(INSTALL_LIBRARY_PATH)
+	$(INSTALL) hiredispool.h RedisClient.h $(INSTALL_INCLUDE_PATH)
+	$(INSTALL) $(DYLIBNAME) $(INSTALL_LIBRARY_PATH)
+	$(INSTALL) $(STLIBNAME) $(INSTALL_LIBRARY_PATH)
+
+docker-image:
+	docker build -t hiredispool .
+
+.PHONY: all static clean dep install hiredis-install docker-image
