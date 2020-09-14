@@ -484,6 +484,16 @@ void* redis_vcommand(REDIS_SOCKET* redisocket, REDIS_INSTANCE* inst, const char*
 
     /* forward to hiredis API */
     c = redisocket->conn;
+    if (c == NULL)
+    {
+        /* reconnect the socket */
+        if (connect_single_socket(redisocket, inst) < 0)
+        {
+            log_(L_ERROR | L_CONS, "%s: Reconnect failed, server down?", __func__);
+            goto quit;
+        }        
+        c = redisocket->conn;
+    }
     reply = redisvCommand(c, format, ap);
 
     if (reply == NULL) {
