@@ -51,7 +51,7 @@ int log_debug(const char *msg, ...);
 int log_trace(const char *msg, ...);
 
 void log_set_config(const LOG_CONFIG* config);
-int log_get_verbose();
+int log_get_verbose(void);
 
 #define DEBUG  (log_get_verbose() == 0) ?                           \
     0 : log_debug
